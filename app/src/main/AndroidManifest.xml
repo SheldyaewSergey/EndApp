@@ -23,8 +23,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".FirstDemoActivity" />
+        <activity
+            android:name=".FirstDemoActivity"
+            android:exported="true">
+
+        </activity>
     </application>
 
 </manifest>

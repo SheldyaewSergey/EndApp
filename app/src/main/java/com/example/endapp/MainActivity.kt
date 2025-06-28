@@ -52,10 +52,10 @@ class MainActivity : AppCompatActivity() {
                 tvQuestionWord.isVisible = true
                 tvQuestionWord.text = firstQuestion.correctAnswer.original
 
-                tvVarNum1.text = firstQuestion.variants[0].translated
-                tvVarNum2.text = firstQuestion.variants[1].translated
-                tvVarNum3.text = firstQuestion.variants[2].translated
-                tvVarNum4.text = firstQuestion.variants[3].translated
+                tvVariantValue1.text = firstQuestion.variants[0].translated
+                tvVariantValue2.text = firstQuestion.variants[1].translated
+                tvVariantValue3.text = firstQuestion.variants[2].translated
+                tvVariantValue4.text = firstQuestion.variants[3].translated
 
                 layoutAnswer1.setOnClickListener {
                     if(trainer.checkAnswer(0)) {
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                 )
 
 
-                tvVariantNumber.setTextColor(
+                tvVariantValue.setTextColor(
                     ContextCompat.getColor(
                         this@MainActivity,
                         R.color.textVariantsColor
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        tvVariantValue.apply {
+        tvVariantNumber.apply {
                     background = ContextCompat.getDrawable(
                         this@MainActivity,
                         R.drawable.shape_rounded_variants,

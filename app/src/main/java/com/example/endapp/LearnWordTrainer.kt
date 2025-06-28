@@ -153,6 +153,16 @@ class LearnWordTrainer{
             }
         } ?: false
     }
+
+    public fun getNotLearnedWordsCount(): Int {
+        return dictionary.count { !it.learned }
+    }
+
+    fun getLearningProgress(): Float {
+        val totalWords = dictionary.size
+        val learnedWords = dictionary.count { it.learned }
+        return learnedWords.toFloat() / totalWords.toFloat()
+    }
 }
 
 const val NUMBER_OF_ANSWERS: Int = 4

@@ -1,16 +1,16 @@
 package com.example.endapp
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.util.Log
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.example.endapp.databinding.ActivityLearnWordBinding
-import com.example.endapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,20 +24,53 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityLearnWordBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val trainer = LearnWordTrainer()
-        showNextQuestion(trainer)
+        binding.root.post {
 
-        with(binding){
-            btnContinue.setOnClickListener{
-                layoutResult.isVisible = false
-                markAnswerNeutral(layoutAnswer1, tvVarNum1, tvVariantValue1)
-                markAnswerNeutral(layoutAnswer2, tvVarNum2, tvVariantValue2)
-                markAnswerNeutral(layoutAnswer3, tvVarNum3, tvVariantValue3)
-                markAnswerNeutral(layoutAnswer4, tvVarNum4, tvVariantValue4)
-                showNextQuestion(trainer)
+            val widthPx = binding.layoutStatus.width
+
+            val newWidthDp = 200
+            val newWidthPx = (newWidthDp * resources.displayMetrics.density).toInt()
+
+            Log.i("Test1", "Текущая: $widthPx px, Новая: $newWidthPx px (${newWidthDp}dp)")
+
+            val trainer = LearnWordTrainer()
+            showNextQuestion(trainer)
+            val statusCounter = trainer.getNotLearnedWordsCount() - 1
+            binding.tvStatus.text = statusCounter.toString()
+
+            with(binding) {
+                btnContinue.setOnClickListener {
+                    layoutResult.isVisible = false
+                    markAnswerNeutral(layoutAnswer1, tvVarNum1, tvVariantValue1)
+                    markAnswerNeutral(layoutAnswer2, tvVarNum2, tvVariantValue2)
+                    markAnswerNeutral(layoutAnswer3, tvVarNum3, tvVariantValue3)
+                    markAnswerNeutral(layoutAnswer4, tvVarNum4, tvVariantValue4)
+                    showNextQuestion(trainer)
+
+                    val statusCounter = trainer.getNotLearnedWordsCount() - 1
+                    tvStatus.text = statusCounter.toString()
+
+                    val currentWidth = layoutStatusInner.width
+                    val percentOfLearned = trainer.getLearningProgress()
+                    val newWidth = (layoutStatus.width * percentOfLearned).toInt()
+
+                    val animator = ValueAnimator.ofInt(currentWidth, newWidth).apply {
+                        duration = 300
+                        interpolator = AccelerateDecelerateInterpolator()
+
+                        addUpdateListener { animation ->
+                            val animatedValue = animation.animatedValue as Int
+                            layoutStatusInner.layoutParams.width = animatedValue
+                            layoutStatusInner.requestLayout()
+                        }
+                    }
+                    animator.start()
+                }
+                btnSkip.setOnClickListener { showNextQuestion(trainer) }
             }
-            btnSkip.setOnClickListener{showNextQuestion(trainer)}
         }
+
+
     }
 
     private fun showNextQuestion(trainer: LearnWordTrainer) {
